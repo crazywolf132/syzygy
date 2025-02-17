@@ -1,0 +1,101 @@
+name: 💡 Feature Request
+description: Suggest an idea for this project
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature! Please fill out this form as completely as possible.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🎯 Problem Statement
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 💭 Proposed Solution
+      description: Describe the solution you'd like to see
+      placeholder: |
+        A clear and concise description of what you want to happen.
+        Consider including:
+        - API design
+        - Usage examples
+        - Implementation ideas
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternative Solutions
+      description: Describe any alternative solutions or features you've considered
+      placeholder: |
+        What other approaches might solve this problem?
+        Why did you choose this solution over alternatives?
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: 📊 Impact Assessment
+      description: How would you rate the impact of this feature?
+      options:
+        - Critical (Blocking work)
+        - High (Major improvement)
+        - Medium (Nice to have)
+        - Low (Minor enhancement)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 🎯 Feature Scope
+      description: What components would this feature affect?
+      multiple: true
+      options:
+        - Core Agent System
+        - Tool Integration
+        - UI Generation
+        - Orchestration
+        - Documentation
+        - Examples
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 📝 Additional Context
+      description: Add any other context about the feature request here
+      placeholder: |
+        - Use cases
+        - Screenshots/mockups
+        - Related features in other projects
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: 🛠️ Implementation Ideas
+      description: If you have any ideas about how to implement this feature, share them here
+      placeholder: |
+        Technical considerations:
+        - Architecture changes
+        - New dependencies
+        - Potential challenges
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 🤝 Code of Conduct
+      description: By submitting this feature request, you agree to follow our Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true 
