@@ -11,7 +11,16 @@ export { AgentBuilder, consoleLogger } from "./agent-builder";
 export { AgentOrchestrator } from "./orchestrator";
 
 // UI generation
-export { Framework, UIComponent, ComponentGenerator, DefaultComponentGenerator } from "./generative-ui";
+export {
+  Framework,
+  UIComponent,
+  ComponentGenerator,
+  DefaultComponentGenerator,
+  ReactComponentOption,
+  chooseAndFillReactComponent,
+  LibraryComponent,
+  EnhancedComponentGenerator,
+} from "./generative-ui";
 
 // UI agent
 export { AgenticUIOptions, AgentWithUI } from "./agentic-ui"; 

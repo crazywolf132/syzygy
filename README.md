@@ -86,13 +86,73 @@ agent.withTool(tool);
 
 ### UI Generation
 
-Generate UI components for different frameworks:
+Syzygy supports two powerful approaches for UI generation:
 
-```typescript
-const generator = new DefaultComponentGenerator();
-const component = await generator.generateComponent("A modern dashboard");
-console.log(component.render());
-```
+1. **Component Selection & Prop Filling**  
+   Provide a list of React component options (or components for another framework) along with their props definitions (using Zod schemas). Based on a prompt, Syzygy will choose the best component and generate the props. For example:
+
+   ```typescript
+   import { z } from "zod";
+   import { ReactComponentOption } from "syzygy";
+
+   // Define a React component option:
+   const ButtonOption: ReactComponentOption = {
+     name: "Button",
+     component: require("my-component-library").Button,
+     propsSchema: z.object({
+       label: z.string(),
+       onClick: z.function().args().returns(z.void()),
+     }),
+   };
+
+   // Pass the options into your AgentWithUI instance:
+   const uiAgent = new MyUIAgent(..., {
+     availableComponents: [ButtonOption],
+     componentGenerator: new DefaultComponentGenerator(),
+   });
+
+   // Later, choose a component based on a prompt:
+   const uiComponent = await uiAgent.generateComponentFromOptions(
+     "Create a primary button labeled 'Submit'"
+   );
+   console.log(uiComponent.render());
+   ```
+
+2. **Full Code Generation**  
+   Use the full component generator to create new UI code based on a description. You can also provide library components (e.g., from Material UI) that the generator can use to compose larger components:
+
+   ```typescript
+   import { LibraryComponent, EnhancedComponentGenerator } from "syzygy";
+
+   // Define available library components
+   const materialUIComponents: LibraryComponent[] = [
+     {
+       name: "Button",
+       importPath: "@mui/material",
+       description: "A Material UI button component",
+     },
+     // ... more components
+   ];
+
+   // Create an agent with library components
+   const uiAgent = new MyUIAgent(..., {
+     libraryComponents: materialUIComponents,
+     componentGenerator: new EnhancedComponentGenerator(materialUIComponents),
+   });
+
+   // Generate a complete component
+   const uiComponent = await uiAgent.generateUIComponent(`
+     Create a dashboard layout with:
+     - A header with a title
+     - A grid of cards showing different metrics
+     - A sidebar with navigation buttons
+   `);
+   console.log(uiComponent.render());
+   ```
+
+You can mix both approaches as needed, even composing larger composite components (for instance, a complete dashboard) by combining your pre-defined component options with fully generated code.
+
+For more examples, check out the `examples/ui-generation` directory, particularly `enhanced-dashboard-generator.ts` which demonstrates both approaches.
 
 ### Orchestration
 
