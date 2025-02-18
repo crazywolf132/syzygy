@@ -1,3 +1,5 @@
+import { StateManager } from './state-manager';
+
 /**
  * Basic types for tool parameters and results.
  */
@@ -13,11 +15,12 @@ export interface Tool<T = ToolParams, U = ToolResult> {
 }
 
 /**
- * The AgentContext holds registered tools and an optional logger.
+ * The AgentContext holds registered tools, a logger, and a state manager.
  */
 export interface AgentContext {
   tools: Map<string, Tool>;
   logger?: Logger;
+  stateManager?: StateManager;
 }
 
 /**
@@ -34,4 +37,7 @@ export interface AgentConfig {
 export interface Logger {
   log: (message: string, data?: any) => void;
   error: (message: string, error?: Error) => void;
-} 
+}
+
+// Re-export StateManager interface for convenience
+export { StateManager } from './state-manager'; 

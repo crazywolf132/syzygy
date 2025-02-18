@@ -31,6 +31,87 @@ export abstract class Agent<I = any, O = any> {
     this.context.logger?.log(`[${this.config.name}] Calling tool "${toolName}" with params:`, params);
     return await tool.execute(params);
   }
+
+  /**
+   * Save agent state with the given key.
+   * @throws Error if no state manager is available
+   */
+  protected async saveState<T>(key: string, data: T): Promise<void> {
+    if (!this.context.stateManager) {
+      throw new Error(`No state manager available in agent "${this.config.name}".`);
+    }
+    const fullKey = this.getStateKey(key);
+    await this.context.stateManager.set(fullKey, data);
+    this.context.logger?.log(`[${this.config.name}] Saved state for key "${key}"`);
+  }
+
+  /**
+   * Load agent state for the given key.
+   * @throws Error if no state manager is available
+   */
+  protected async loadState<T>(key: string): Promise<T | null> {
+    if (!this.context.stateManager) {
+      throw new Error(`No state manager available in agent "${this.config.name}".`);
+    }
+    const fullKey = this.getStateKey(key);
+    const data = await this.context.stateManager.get<T>(fullKey);
+    this.context.logger?.log(`[${this.config.name}] Loaded state for key "${key}"`);
+    return data;
+  }
+
+  /**
+   * Delete agent state for the given key.
+   * @throws Error if no state manager is available
+   */
+  protected async deleteState(key: string): Promise<void> {
+    if (!this.context.stateManager) {
+      throw new Error(`No state manager available in agent "${this.config.name}".`);
+    }
+    const fullKey = this.getStateKey(key);
+    await this.context.stateManager.delete(fullKey);
+    this.context.logger?.log(`[${this.config.name}] Deleted state for key "${key}"`);
+  }
+
+  /**
+   * List all state keys for this agent.
+   * @throws Error if no state manager is available
+   */
+  protected async listStateKeys(): Promise<string[]> {
+    if (!this.context.stateManager) {
+      throw new Error(`No state manager available in agent "${this.config.name}".`);
+    }
+    const allKeys = await this.context.stateManager.keys();
+    const prefix = this.getStateKeyPrefix();
+    return allKeys
+      .filter(key => key.startsWith(prefix))
+      .map(key => key.slice(prefix.length));
+  }
+
+  /**
+   * Clear all state for this agent.
+   * @throws Error if no state manager is available
+   */
+  protected async clearState(): Promise<void> {
+    const keys = await this.listStateKeys();
+    for (const key of keys) {
+      await this.deleteState(key);
+    }
+    this.context.logger?.log(`[${this.config.name}] Cleared all state`);
+  }
+
+  /**
+   * Get the full state key including agent prefix.
+   */
+  private getStateKey(key: string): string {
+    return `${this.getStateKeyPrefix()}${key}`;
+  }
+
+  /**
+   * Get the prefix used for all state keys for this agent.
+   */
+  private getStateKeyPrefix(): string {
+    return `agent:${this.config.name}:`;
+  }
 }
 
 /**
